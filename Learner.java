@@ -53,6 +53,8 @@ class Learner implements Comparable<Learner>
 	{
 	}
 	
+	//compareTo is slightly different from usual
+	//this definition is so that collections.sort sorts by descending order
 	public int compareTo(Learner other)
 	{
 		return other.fitness - this.fitness;
