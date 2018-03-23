@@ -1,17 +1,18 @@
 import java.util.*;
 
-class Learner implements Comparable<Learner>
+class Learner implements Comparable<Learner>, Runnable
 {
-	public static final int NUM_WEIGHTS = 22;
-	public static final int MIN_WEIGHT = -200;
-	public static final int MAX_WEIGHT = 100;
-	public int[] weights;
+	public static int NUM_WEIGHTS = 22;
+	public static double MIN_WEIGHT = -200;
+	public static double MAX_WEIGHT = 100;
+	public static double MAX_REWARD_WEIGHT = 500;
+	public double[] weights;
 	public int fitness = -1;
 	public PlayerSkeleton ps;
 	
-	public Learner (int[] inWeights, int fitness)
+	public Learner (double[] inWeights, int fitness)
 	{
-		weights = new int[NUM_WEIGHTS];
+		weights = new double[NUM_WEIGHTS];
 		for (int i = 0; i < NUM_WEIGHTS; i++)
 			weights[i] = inWeights[i];
 		ps = new PlayerSkeleton();
@@ -19,9 +20,9 @@ class Learner implements Comparable<Learner>
 		ps.setWeights(weights);
 	}
 	
-	public Learner (int[] inWeights)
+	public Learner (double[] inWeights)
 	{
-		weights = new int[NUM_WEIGHTS];
+		weights = new double[NUM_WEIGHTS];
 		for (int i = 0; i < NUM_WEIGHTS; i++)
 			weights[i] = inWeights[i];
 		ps = new PlayerSkeleton();
@@ -30,15 +31,15 @@ class Learner implements Comparable<Learner>
 	
 	public Learner ()
 	{
-		weights = new int[NUM_WEIGHTS];
+		weights = new double[NUM_WEIGHTS];
 		Random rnggod = new Random(System.nanoTime());
 		//negative weights for evaluation function , range -200 to 100
 		for (int i = 0; i < NUM_WEIGHTS-1; i++)
 		{
-			weights[i] = rnggod.nextInt(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
+			weights[i] = rnggod.nextDouble()*(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
 		}
 		//set large positive weight for reward value
-		weights[NUM_WEIGHTS-1] = rnggod.nextInt(500);
+		weights[NUM_WEIGHTS-1] = rnggod.nextDouble()*MAX_REWARD_WEIGHT;
 		ps = new PlayerSkeleton();
 		ps.setWeights(weights);
 	}

@@ -2,19 +2,19 @@ import java.util.*;
 
 public class PlayerSkeleton {
 
-	public int[] weights;
+	public double[] weights;
 
 	public PlayerSkeleton()
 	{
 		//initialise default weights here
-		//weights = new int[22];
+		//weights = new double[22];
 		//weights 0 to 9 are column heights
 		//weights 10 to 18 are differences in adjacent column heights
 		//weight 19 is maximum column heights
 		//weight 20 is number of holes
 		//weight 21 is reward for clearing.
 		//default initialisations
-		weights = new int[22];
+		weights = new double[22];
 		for (int i = 0; i < 22; i++)
 			weights[i] = 0;
 	}
@@ -22,12 +22,12 @@ public class PlayerSkeleton {
 	//implement this function to have a working system
 	public int pickMove(State s, int[][] legalMoves) {
 		int bestMove = 0;
-		int maxSoFar = Integer.MIN_VALUE;
+		double maxSoFar = Integer.MIN_VALUE;
 		for (int i = 0; i < legalMoves.length; i++)
 		{
 			NextState ns = new NextState(s.getField(), s.getTop(), s.getNextPiece());
 			ns.makeMove(i);
-			int currValue = getHeuristic(ns);
+			double currValue = getHeuristic(ns);
 			if (currValue > maxSoFar)
 			{
 				maxSoFar = currValue;
@@ -72,9 +72,9 @@ public class PlayerSkeleton {
 		ps.runNormal();
 	}
 	
-	public int getHeuristic(NextState ns)
+	public double getHeuristic(NextState ns)
 	{
-		int heuristic = 0;
+		double heuristic = 0;
 		//get col height heuristic
 		for (int i = 0; i < 10; i++)
 		{
@@ -107,7 +107,7 @@ public class PlayerSkeleton {
 		}
 	}
 	
-	public void setWeights(int[] newWeights)
+	public void setWeights(double[] newWeights)
 	{
 		for (int i = 0; i < newWeights.length; i++)
 			weights[i] = newWeights[i];

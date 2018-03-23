@@ -180,8 +180,16 @@ public class NextState {
 		//height if the first column makes contact
 		int height = top[slot]-pBottom[nextPiece][orient][0];
 		//for each column beyond the first in the piece
-		for(int c = 1; c < pWidth[nextPiece][orient];c++) {
-			height = Math.max(height,top[slot+c]-pBottom[nextPiece][orient][c]);
+		for(int c = 1; c < pWidth[nextPiece][orient];c++) 
+		{
+			try
+			{
+				height = Math.max(height,top[slot+c]-pBottom[nextPiece][orient][c]);
+			}
+			catch (ArrayIndexOutOfBoundsException oobe)
+			{
+				System.out.println(slot + " " + c + " " + nextPiece + " " + orient + " " + c);
+			}
 		}
 		
 		//check if game ended
