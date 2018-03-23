@@ -1,7 +1,24 @@
+import java.util.*;
+
 public class PlayerSkeleton {
 
-	private static int[] weights;
+	public int[] weights;
 
+	public PlayerSkeleton()
+	{
+		//initialise default weights here
+		//weights = new int[22];
+		//weights 0 to 9 are column heights
+		//weights 10 to 18 are differences in adjacent column heights
+		//weight 19 is maximum column heights
+		//weight 20 is number of holes
+		//weight 21 is reward for clearing.
+		//default initialisations
+		weights = new int[22];
+		for (int i = 0; i < 22; i++)
+			weights[i] = 0;
+	}
+	
 	//implement this function to have a working system
 	public int pickMove(State s, int[][] legalMoves) {
 		int bestMove = 0;
@@ -11,8 +28,6 @@ public class PlayerSkeleton {
 			NextState ns = new NextState(s.getField(), s.getTop(), s.getNextPiece());
 			ns.makeMove(i);
 			int currValue = getHeuristic(ns);
-			//printGrid(ns);
-			//System.out.println(currValue);
 			if (currValue > maxSoFar)
 			{
 				maxSoFar = currValue;
@@ -22,22 +37,20 @@ public class PlayerSkeleton {
 		return bestMove;
 	}
 	
-	public static void main(String[] args) {
-		//initialise weights here
-		weights = new int[22];
-		//weights 0 to 9 are column heights
-		//weights 10 to 18 are differences in adjacent column heights
-		//weight 19 is maximum column heights
-		//weight 20 is number of holes
-		//weight 21 is reward for clearing.
-		//debug setting initialisations
-		for (int i = 0; i < 10; i++)
-			weights[i] = -51;
-		for (int i = 10; i < 19; i++)
-			weights[i] = -18;
-		weights[19] = 0;
-		weights[20] = -35;
-		weights[21] = 76;
+	public int run()
+	{
+		State s = new State();
+		//new TFrame(s);
+		while(!s.hasLost()) {
+			s.makeMove(this.pickMove(s,s.legalMoves()));
+			//s.draw();
+			//s.drawNext(0,0);
+		}
+		return s.getRowsCleared();
+	}
+	
+	public void runNormal()
+	{
 		State s = new State();
 		new TFrame(s);
 		PlayerSkeleton p = new PlayerSkeleton();
@@ -54,7 +67,12 @@ public class PlayerSkeleton {
 		System.out.println("You have completed "+s.getRowsCleared()+" rows.");
 	}
 	
-	public static int getHeuristic(NextState ns)
+	public static void main(String[] args) {
+		PlayerSkeleton ps = new PlayerSkeleton();
+		ps.runNormal();
+	}
+	
+	public int getHeuristic(NextState ns)
 	{
 		int heuristic = 0;
 		//get col height heuristic
@@ -76,7 +94,7 @@ public class PlayerSkeleton {
 		return heuristic;
 	}
 	
-	public static void printGrid(NextState ns)
+	public void printGrid(NextState ns)
 	{
 		int[][] grid = ns.getField();
 		for (int i = grid.length-1; i >= 0; i--)
@@ -87,6 +105,12 @@ public class PlayerSkeleton {
 			}
 			System.out.println();
 		}
+	}
+	
+	public void setWeights(int[] newWeights)
+	{
+		for (int i = 0; i < newWeights.length; i++)
+			weights[i] = newWeights[i];
 	}
 	
 }
