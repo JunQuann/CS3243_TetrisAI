@@ -52,9 +52,7 @@ public class PlayerSkeleton {
 	public int run()
 	{
 		State s = new State();
-		/*while(!s.hasLost()) {
-			s.makeMove(this.pickMove(s,s.legalMoves()));
-		}*/
+		//max out at 5000 moves so that when the weights are very fit it will not take forever to find fitness
 		for (int i = 0; i < 5000 && !s.hasLost(); i++)
 		{
 			s.makeMove(this.pickMove(s, s.legalMoves()));

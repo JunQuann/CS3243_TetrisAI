@@ -3,10 +3,10 @@ import java.util.*;
 class Learner implements Comparable<Learner>, Runnable
 {
 	public static int NUM_WEIGHTS = 22;
-	public static double MIN_WEIGHT = -200;
+	public static double MIN_WEIGHT = -100;
 	public static double MAX_WEIGHT = 0;
-	public static double MAX_REWARD_WEIGHT = 400;
-	public static int NUM_TETRIS = 20;
+	public static double MAX_REWARD_WEIGHT = 100;
+	public static int NUM_TETRIS = 10;
 	public double[] weights;
 	public int fitness = -1;
 	
@@ -29,12 +29,12 @@ class Learner implements Comparable<Learner>, Runnable
 	{
 		weights = new double[NUM_WEIGHTS];
 		Random rnggod = new Random(System.nanoTime());
-		//negative weights for evaluation function , range -200 to 0
+		//negative weights for evaluation function , range -100 to 0
 		for (int i = 0; i < NUM_WEIGHTS-1; i++)
 		{
 			weights[i] = rnggod.nextDouble()*(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
 		}
-		//set large positive weight for reward value
+		//set positive weight for clearing lines
 		weights[NUM_WEIGHTS-1] = rnggod.nextDouble()*MAX_REWARD_WEIGHT;
 	}
 	

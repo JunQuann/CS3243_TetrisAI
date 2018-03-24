@@ -3,10 +3,10 @@ import java.io.*;
 
 public class LearningAlgorithm
 {
-	public static final int POP_SIZE = 150;
-	public static final int NUM_GEN = 40; //number of new pop introduced in each generation
-	public static final int MUTATION_RATE = 100; //mutation rate out of MAX_MUTATION_RATE
-	public static final int MAX_MUTATION_RATE = 1000; //value for 100% chance of mutation occuring
+	public static final int POP_SIZE = 200;
+	public static final int NUM_GEN = 100; //number of new pop introduced in each generation
+	public static final int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
+	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
 	public static final int NUM_RUNS = 10000; //number of runs to learn each time this algo is run
 	public static final int TOURNAMENT_SIZE = 15; //size of tournament for tournament mating algorithm
 	public static final boolean newFile = true;
@@ -62,11 +62,6 @@ public class LearningAlgorithm
 					System.out.println("Exception when joining thread. " + ie.getMessage());
 				}
 			}
-			/*for (int i = 0; i < POP_SIZE; i++)
-			  {
-			  learners.get(i).run();
-			  totalFitness += learners.get(i).fitness;
-			  }*/
 			Collections.sort(learners);
 			System.out.println(run + " " + learners.get(0).fitness);
 			Learner[] newGeneration = new Learner[NUM_GEN];
@@ -75,23 +70,17 @@ public class LearningAlgorithm
 				newGeneration[k] = tournamentMating();
 			}
 			//kill off last NUM_GEN of the old generation, replace with the new generation
-			int i = POP_SIZE-1;
+			int i = POP_SIZE-NUM_GEN;
 			for (int j = 0; j < newGeneration.length; j++) 
 			{
 				learners.set(i, newGeneration[j]);
-				i--;
+				i++;
 			}
 			//save data to file
 			if (run % 10 == 0)
-			{
-				PrintWriter out = new PrintWriter("weights.txt");
-				out.println(run+totalRuns);
-				for (int j = 0; j < POP_SIZE; j++)
-				{
-					out.println(learners.get(j).toString());
-				}
-				out.close();
-			}
+				saveToFile(run+totalRuns, learners);
+			if (run < 800 && run%100 == 0)
+				Learner.NUM_TETRIS--;
 		}
 	}
 
@@ -128,13 +117,11 @@ public class LearningAlgorithm
 	public Learner weightedReproduce(Learner first, Learner second)
 	{
 		double[] newW = new double[Learner.NUM_WEIGHTS];
-		//add 1 to adjust for edge case of fitness = 0
-		int weightFirst = first.fitness+1;
-		int weightSecond = second.fitness+1;
+		//child takes half from first parent, half from second
 		for (int i = 0; i < Learner.NUM_WEIGHTS; i++)
 		{
-			double currW = first.weights[i] * weightFirst + second.weights[i] * weightSecond;
-			currW = currW/(double)(weightFirst + weightSecond);
+			double currW = first.weights[i] + second.weights[i];
+			currW = currW/2.0;
 			newW[i] = currW;
 		}
 		mutate(newW);
@@ -154,6 +141,7 @@ public class LearningAlgorithm
 		return new Learner(newW);
 	}
 
+	//for each weight, randomly decides to mutate it or not
 	public void mutate(double[] weights)
 	{
 		for (int i = 0; i < Learner.NUM_WEIGHTS; i++)
@@ -161,10 +149,21 @@ public class LearningAlgorithm
 			int mutationChance = rnggod.nextInt(MAX_MUTATION_RATE);
 			if (mutationChance < MUTATION_RATE)
 			{
-				//randomly mutate the value by up t0 50% of the initial range
-				weights[i] += rnggod.nextDouble()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)/2; 
+				//randomly mutate the value by up to 25% of the initial range
+				weights[i] += rnggod.nextDouble()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)/4.0; 
 			}
 		}
+	}
+	
+	public void saveToFile(int runs, ArrayList<Learner> learners) throws FileNotFoundException
+	{
+		PrintWriter out = new PrintWriter("weights.txt");
+		out.println(runs);
+		for (int j = 0; j < POP_SIZE; j++)
+		{
+			out.println(learners.get(j).toString());
+		}
+		out.close();
 	}
 
 	public static void main(String[] args)
