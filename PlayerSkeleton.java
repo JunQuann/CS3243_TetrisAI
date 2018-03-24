@@ -1,4 +1,5 @@
 import java.util.*;
+import java.io.*;
 
 public class PlayerSkeleton {
 
@@ -14,9 +15,20 @@ public class PlayerSkeleton {
 		//weight 20 is number of holes
 		//weight 21 is reward for clearing.
 		//default initialisations
-		weights = new double[22];
-		for (int i = 0; i < 22; i++)
-			weights[i] = 0;
+		try
+		{
+			Scanner sc = new Scanner(new File("weights.txt"));
+			weights = new double[22];
+			sc.nextInt();
+			sc.nextInt();
+			for (int i = 0; i < 22; i++)
+				weights[i] = sc.nextDouble();
+		}
+		catch (FileNotFoundException fnfe)
+		{
+			System.out.println("File not found.");
+			System.exit(1);
+		}
 	}
 	
 	//implement this function to have a working system
@@ -40,11 +52,12 @@ public class PlayerSkeleton {
 	public int run()
 	{
 		State s = new State();
-		//new TFrame(s);
-		while(!s.hasLost()) {
+		/*while(!s.hasLost()) {
 			s.makeMove(this.pickMove(s,s.legalMoves()));
-			//s.draw();
-			//s.drawNext(0,0);
+		}*/
+		for (int i = 0; i < 5000 && !s.hasLost(); i++)
+		{
+			s.makeMove(this.pickMove(s, s.legalMoves()));
 		}
 		return s.getRowsCleared();
 	}
@@ -69,7 +82,8 @@ public class PlayerSkeleton {
 	
 	public static void main(String[] args) {
 		PlayerSkeleton ps = new PlayerSkeleton();
-		ps.runNormal();
+		System.out.println(ps.run());
+		//ps.runNormal();
 	}
 	
 	public double getHeuristic(NextState ns)

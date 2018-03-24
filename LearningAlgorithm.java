@@ -7,18 +7,18 @@ public class LearningAlgorithm
 	public static final int NUM_GEN = 40; //number of new pop introduced in each generation
 	public static final int MUTATION_RATE = 100; //mutation rate out of MAX_MUTATION_RATE
 	public static final int MAX_MUTATION_RATE = 1000; //value for 100% chance of mutation occuring
-	public static final int NUM_RUNS = 20; //number of runs to learn each time this algo is run
-	public static final int TOURNAMENT_SIZE = 20; //size of tournament for tournament mating algorithm
-	public static final boolean newFile = false;
+	public static final int NUM_RUNS = 10000; //number of runs to learn each time this algo is run
+	public static final int TOURNAMENT_SIZE = 15; //size of tournament for tournament mating algorithm
+	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
 	public static Random rnggod;
-	
+
 	public LearningAlgorithm ()
 	{
 		rnggod = new Random(System.nanoTime());
 		learners = new ArrayList<Learner>();
 	}
-	
+
 	public void run () throws IOException
 	{
 		int totalRuns = 0;
@@ -63,12 +63,12 @@ public class LearningAlgorithm
 				}
 			}
 			/*for (int i = 0; i < POP_SIZE; i++)
-			{
-				learners.get(i).run();
-				totalFitness += learners.get(i).fitness;
-			}*/
+			  {
+			  learners.get(i).run();
+			  totalFitness += learners.get(i).fitness;
+			  }*/
 			Collections.sort(learners);
-			System.out.println(learners.get(0).fitness);
+			System.out.println(run + " " + learners.get(0).fitness);
 			Learner[] newGeneration = new Learner[NUM_GEN];
 			for (int k = 0; k < NUM_GEN; k++)
 			{
@@ -81,23 +81,26 @@ public class LearningAlgorithm
 				learners.set(i, newGeneration[j]);
 				i--;
 			}
+			//save data to file
+			if (run % 10 == 0)
+			{
+				PrintWriter out = new PrintWriter("weights.txt");
+				out.println(run+totalRuns);
+				for (int j = 0; j < POP_SIZE; j++)
+				{
+					out.println(learners.get(j).toString());
+				}
+				out.close();
+			}
 		}
-		//save data to file
-		PrintWriter out = new PrintWriter("weights.txt");
-		out.println(NUM_RUNS+totalRuns);
-		for (int i = 0; i < POP_SIZE; i++)
-		{
-			out.println(learners.get(i).toString());
-		}
-		out.close();
 	}
-	
+
 	public Learner tournamentMating()
 	{
 		ArrayList<Integer> fittestTwo = tournament();
 		return weightedReproduce(learners.get(fittestTwo.get(0)), learners.get(fittestTwo.get(1)));
 	}
-	
+
 	//returns 2 integers - the position of the 2 winners of the tournament
 	public ArrayList<Integer> tournament()
 	{
@@ -114,14 +117,14 @@ public class LearningAlgorithm
 		result.add(tList.get(1));
 		return result;
 	}
-	
+
 	public Learner consecutiveMating(int k)
 	{
 		Learner firstParent = learners.get(k*2);
 		Learner secondParent = learners.get(k*2+1);
 		return weightedReproduce(firstParent, secondParent);
 	}
-	
+
 	public Learner weightedReproduce(Learner first, Learner second)
 	{
 		double[] newW = new double[Learner.NUM_WEIGHTS];
@@ -137,7 +140,7 @@ public class LearningAlgorithm
 		mutate(newW);
 		return new Learner(newW);
 	}
-	
+
 	public Learner reproduce(Learner first, Learner second)
 	{
 		int crossoverPoint = rnggod.nextInt(Learner.NUM_WEIGHTS);
@@ -150,7 +153,7 @@ public class LearningAlgorithm
 		mutate(newW);
 		return new Learner(newW);
 	}
-	
+
 	public void mutate(double[] weights)
 	{
 		for (int i = 0; i < Learner.NUM_WEIGHTS; i++)
@@ -158,11 +161,12 @@ public class LearningAlgorithm
 			int mutationChance = rnggod.nextInt(MAX_MUTATION_RATE);
 			if (mutationChance < MUTATION_RATE)
 			{
-				weights[i] += rnggod.nextDouble()*100-50; //randomly mutate the value by [-50, 50)
+				//randomly mutate the value by up t0 50% of the initial range
+				weights[i] += rnggod.nextDouble()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)/2; 
 			}
 		}
 	}
-	
+
 	public static void main(String[] args)
 	{
 		LearningAlgorithm la = new LearningAlgorithm();
