@@ -8,20 +8,19 @@ public class PlayerSkeleton {
 	public PlayerSkeleton()
 	{
 		//initialise default weights here
-		//weights = new double[22];
-		//weights 0 to 9 are column heights
-		//weights 10 to 18 are differences in adjacent column heights
-		//weight 19 is maximum column heights
-		//weight 20 is number of holes
-		//weight 21 is reward for clearing.
-		//default initialisations
+		//weights 0 is total column height
+		//weights 1 are differences in adjacent column heights
+		//weight 2 is maximum column heights
+		//weight 3 is number of holes
+		//weight 4 is reward for clearing.
+		//load most fit weights from file
 		try
 		{
 			Scanner sc = new Scanner(new File("weights.txt"));
-			weights = new double[22];
+			weights = new double[5];
 			sc.nextInt();
 			sc.nextInt();
-			for (int i = 0; i < 22; i++)
+			for (int i = 0; i < 5; i++)
 				weights[i] = sc.nextDouble();
 		}
 		catch (FileNotFoundException fnfe)
@@ -87,22 +86,18 @@ public class PlayerSkeleton {
 	public double getHeuristic(NextState ns)
 	{
 		double heuristic = 0;
+		if (ns.hasLost())
+			return Double.MIN_VALUE;
 		//get col height heuristic
-		for (int i = 0; i < 10; i++)
-		{
-			heuristic += weights[i] * ns.getColumnHeight(i);
-		}
+		heuristic += weights[0] * ns.getTotalColumnHeight();
 		//get adjacent col height diff heuristic
-		for (int i = 0; i < 9; i++)
-		{
-			heuristic += weights[i+10] * ns.getColumnHeightDiff(i);
-		}
+		heuristic += weights[1] * ns.getTotalColumnHeightDiff();
 		//get max col height heuristic
-		heuristic += weights[19] * ns.getMaxColumnHeight();
+		heuristic += weights[2] * ns.getMaxColumnHeight();
 		//get holes heuristic
-		heuristic += weights[20] * ns.getHoles();
+		heuristic += weights[3] * ns.getHoles();
 		//get cleared rows heuristic
-		heuristic += weights[21] * ns.getRowsCleared();
+		heuristic += weights[4] * ns.getRowsCleared();
 		return heuristic;
 	}
 	

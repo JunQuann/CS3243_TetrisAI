@@ -4,7 +4,7 @@ import java.io.*;
 public class LearningAlgorithm
 {
 	public static final int POP_SIZE = 200;
-	public static final int NUM_GEN = 100; //number of new pop introduced in each generation
+	public static final int NUM_GEN = 50; //number of new pop introduced in each generation
 	public static final int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
 	public static final int NUM_RUNS = 10000; //number of runs to learn each time this algo is run

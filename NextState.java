@@ -251,10 +251,28 @@ public class NextState {
 		return top[col];
 	}
 	
+	public int getTotalColumnHeight()
+	{
+		int total = 0;
+		for (int i = 0; i < COLS; i++)
+			total += top[i];
+		return total;
+	}
+	
 	//difference between col and col+1.
 	public int getColumnHeightDiff(int col)
 	{
 		return Math.abs(top[col] - top[col+1]);
+	}
+	
+	public int getTotalColumnHeightDiff()
+	{
+		int total = 0;
+		for (int i = 0; i < COLS-1; i++)
+		{
+			total += getColumnHeightDiff(i);
+		}
+		return total;
 	}
 	
 	public int getMaxColumnHeight()

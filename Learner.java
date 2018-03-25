@@ -2,7 +2,7 @@ import java.util.*;
 
 class Learner implements Comparable<Learner>, Runnable
 {
-	public static int NUM_WEIGHTS = 22;
+	public static int NUM_WEIGHTS = 5;
 	public static double MIN_WEIGHT = -100;
 	public static double MAX_WEIGHT = 0;
 	public static double MAX_REWARD_WEIGHT = 100;
