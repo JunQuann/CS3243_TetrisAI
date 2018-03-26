@@ -9,6 +9,7 @@ public class LearningAlgorithm
 	public static final int TOURNAMENT_SIZE = 15; //size of tournament for tournament mating algorithm
 	public static double MUTATION_AMOUNT = 0.25 //fraction of original range to mutate by
 	public static int NUM_GEN = 300; //number of new pop introduced in each generation
+	public static double REPRODUCTION_RATE = 0.5; //fraction of new pop to be produced via reproduction
 	public static int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
@@ -64,10 +65,16 @@ public class LearningAlgorithm
 			Collections.sort(learners);
 			System.out.println(run + " " + learners.get(0).fitness);
 			Learner[] newGeneration = new Learner[NUM_GEN];
-			for (int k = 0; k < NUM_GEN; k++)
+			for (int k = 0; k < (NUM_GEN * REPRODUCTION_RATE); k++)
 			{
 				newGeneration[k] = tournamentMating();
 			}
+			
+			for (int k = (NUM_GEN * REPRODUCTION_RATE) + 1; k < NUM_GEN; k++)
+			{
+				newGeneration[k] = new Learner();
+			}
+			
 			//kill off last NUM_GEN of the old generation, replace with the new generation
 			int i = POP_SIZE-NUM_GEN;
 			for (int j = 0; j < newGeneration.length; j++) 
