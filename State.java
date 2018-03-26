@@ -1,5 +1,6 @@
 import java.awt.Color;
-
+import java.util.*;
+import java.io.*;
 
 
 
@@ -8,13 +9,7 @@ public class State {
 	public static final int ROWS = 21;
 	public static final int N_PIECES = 7;
 
-	
-
 	public boolean lost = false;
-	
-	
-	
-
 	
 	public TLabel label;
 	
@@ -83,6 +78,8 @@ public class State {
 		{{1,2,2},{3,2}},
 		{{2,2,1},{2,3}}
 	};
+	
+	public Scanner sc;
 	
 	//initialize legalMoves
 	{
@@ -159,13 +156,36 @@ public class State {
 	
 	//constructor
 	public State() {
-		nextPiece = randomPiece();
-
+		//nextPiece = randomPiece();
+		try
+         {
+             sc = new Scanner(new File("pieces.txt"));
+             nextPiece = randomPiece();
+         }
+         catch (FileNotFoundException fnfe)
+         {
+             System.out.println("Could not find pieces.txt");
+             System.exit(1);
+         }
 	}
 	
 	//random integer, returns 0-6
 	private int randomPiece() {
-		return (int)(Math.random()*N_PIECES);
+		//return (int)(Math.random()*N_PIECES);
+		if (!sc.hasNextInt())
+         {
+             try
+             {
+                 sc.close();
+                 sc = new Scanner(new File("pieces.txt"));
+             }
+             catch (FileNotFoundException fnfe)
+             {
+                 System.out.println("Should not fail to find file at this point");
+                 System.exit(1);
+             }
+         }
+         return sc.nextInt();
 	}
 	
 

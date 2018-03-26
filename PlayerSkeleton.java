@@ -52,8 +52,7 @@ public class PlayerSkeleton {
 	public int run()
 	{
 		State s = new State();
-		//max out at 5000 moves so that when the weights are very fit it will not take forever to find fitness
-		for (int i = 0; i < 5000 && !s.hasLost(); i++)
+		for (int i = 0;!s.hasLost(); i++)
 		{
 			s.makeMove(this.pickMove(s, s.legalMoves()));
 		}
@@ -87,6 +86,9 @@ public class PlayerSkeleton {
 	public double getHeuristic(NextState ns)
 	{
 		double heuristic = 0;
+		//if is lost, then return minimum possible value
+		if (ns.hasLost())
+			return Double.MIN_VALUE;
 		//get col height heuristic
 		for (int i = 0; i < 10; i++)
 		{

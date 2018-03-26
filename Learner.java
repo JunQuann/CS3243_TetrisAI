@@ -5,8 +5,8 @@ class Learner implements Comparable<Learner>, Runnable
 	public static int NUM_WEIGHTS = 22;
 	public static double MIN_WEIGHT = -100;
 	public static double MAX_WEIGHT = 0;
-	public static double MAX_REWARD_WEIGHT = 100;
-	public static int NUM_TETRIS = 10;
+	public static double MAX_REWARD_WEIGHT = 1000;
+	public static int NUM_TETRIS = 1;
 	public double[] weights;
 	public int fitness = -1;
 	
@@ -28,14 +28,13 @@ class Learner implements Comparable<Learner>, Runnable
 	public Learner ()
 	{
 		weights = new double[NUM_WEIGHTS];
-		Random rnggod = new Random(System.nanoTime());
 		//negative weights for evaluation function , range -100 to 0
 		for (int i = 0; i < NUM_WEIGHTS-1; i++)
 		{
-			weights[i] = rnggod.nextDouble()*(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
+			weights[i] = Math.random()*(MAX_WEIGHT - MIN_WEIGHT) + MIN_WEIGHT;
 		}
 		//set positive weight for clearing lines
-		weights[NUM_WEIGHTS-1] = rnggod.nextDouble()*MAX_REWARD_WEIGHT;
+		weights[NUM_WEIGHTS-1] = Math.random()*MAX_REWARD_WEIGHT;
 	}
 	
 	public void run()
@@ -43,13 +42,9 @@ class Learner implements Comparable<Learner>, Runnable
 		if (fitness < 0)
 		{
 			fitness = 0;
-			for (int i = 0; i < NUM_TETRIS; i++)
-			{
-				PlayerSkeleton ps = new PlayerSkeleton();
-				ps.setWeights(weights);
-				fitness += ps.run();
-			}
-			fitness = fitness/NUM_TETRIS;
+			PlayerSkeleton ps = new PlayerSkeleton();
+			ps.setWeights(weights);
+			fitness += ps.run();
 		}
 	}
 	
