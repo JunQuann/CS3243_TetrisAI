@@ -9,11 +9,11 @@ public class PlayerSkeleton {
 	{
 		//initialise default weights here
 		//weights = new double[22];
-		//weights 0 to 9 are column heights
-		//weights 10 to 18 are differences in adjacent column heights
-		//weight 19 is maximum column heights
-		//weight 20 is number of holes
-		//weight 21 is reward for clearing.
+		//weights 0 is total column height
+		//weights 1 is differences in adjacent column heights
+		//weight 2 is maximum column heights
+		//weight 3 is number of holes
+		//weight 4 is reward for clearing.
 		//default initialisations
 		try
 		{
@@ -92,19 +92,19 @@ public class PlayerSkeleton {
 		//get col height heuristic
 		for (int i = 0; i < 10; i++)
 		{
-			heuristic += weights[i] * ns.getColumnHeight(i);
+			heuristic += weights[0] * ns.getColumnHeight(i);
 		}
 		//get adjacent col height diff heuristic
 		for (int i = 0; i < 9; i++)
 		{
-			heuristic += weights[i+10] * ns.getColumnHeightDiff(i);
+			heuristic += weights[1] * ns.getColumnHeightDiff(i);
 		}
 		//get max col height heuristic
-		heuristic += weights[19] * ns.getMaxColumnHeight();
+		heuristic += weights[2] * ns.getMaxColumnHeight();
 		//get holes heuristic
-		heuristic += weights[20] * ns.getHoles();
+		heuristic += weights[3] * ns.getHoles();
 		//get cleared rows heuristic
-		heuristic += weights[21] * ns.getRowsCleared();
+		heuristic += weights[4] * ns.getRowsCleared();
 		return heuristic;
 	}
 	

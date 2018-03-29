@@ -2,7 +2,7 @@ import java.util.*;
 
 class Learner implements Comparable<Learner>, Runnable
 {
-	public static int NUM_WEIGHTS = 22;
+	public static int NUM_WEIGHTS = 5;
 	public static double MIN_WEIGHT = -100;
 	public static double MAX_WEIGHT = 0;
 	public static double MAX_REWARD_WEIGHT = 1000;
@@ -46,10 +46,6 @@ class Learner implements Comparable<Learner>, Runnable
 			ps.setWeights(weights);
 			fitness += ps.run();
 		}
-	}
-	
-	public static void main (String[] args)
-	{
 	}
 	
 	//compareTo is slightly different from usual
