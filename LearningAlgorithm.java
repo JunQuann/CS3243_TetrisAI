@@ -4,14 +4,15 @@ import java.io.*;
 public class LearningAlgorithm
 {
 	public static final int POP_SIZE = 1000;
+	public static int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
 	public static final int NUM_RUNS = 100; //number of runs to learn each time this algo is run
 	public static final int TOURNAMENT_SIZE = 15; //size of tournament for tournament mating algorithm
-	public static double MUTATION_AMOUNT = 0.25 //fraction of original range to mutate by
+	public static double MUTATION_AMOUNT = 0.5 //fraction of original range to mutate by
 	public static int NUM_GEN = 300; //number of new pop introduced in each generation
-	public static int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
+
 
 	public LearningAlgorithm ()
 	{
@@ -164,8 +165,8 @@ public class LearningAlgorithm
 			int mutationChance = (int)(Math.random()*MAX_MUTATION_RATE);
 			if (mutationChance < MUTATION_RATE)
 			{
-				//randomly mutate the value by up to 25% of the initial range
-				weights[i] += Math.random()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)*MUTATION_AMOUNT; 
+				//randomly mutate the value by up to +/-25% of the initial range
+				weights[i] += Math.random()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)*MUTATION_AMOUNT - 0.5*MUTATION_AMOUNT*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT); 
 			}
 		}
 	}
