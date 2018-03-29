@@ -156,40 +156,13 @@ public class State {
 	
 	//constructor
 	public State() {
-		//nextPiece = randomPiece();
-		try
-         {
-             sc = new Scanner(new File("pieces.txt"));
-             nextPiece = randomPiece();
-         }
-         catch (FileNotFoundException fnfe)
-         {
-             System.out.println("Could not find pieces.txt");
-             System.exit(1);
-         }
+		nextPiece = randomPiece();
 	}
 	
 	//random integer, returns 0-6
 	private int randomPiece() {
-		//return (int)(Math.random()*N_PIECES);
-		if (!sc.hasNextInt())
-         {
-             try
-             {
-                 sc.close();
-                 sc = new Scanner(new File("pieces.txt"));
-             }
-             catch (FileNotFoundException fnfe)
-             {
-                 System.out.println("Should not fail to find file at this point");
-                 System.exit(1);
-             }
-         }
-         return sc.nextInt();
+		return (int)(Math.random()*N_PIECES);
 	}
-	
-
-
 	
 	//gives legal moves for 
 	public int[][] legalMoves() {

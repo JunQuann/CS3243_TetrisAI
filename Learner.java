@@ -3,10 +3,10 @@ import java.util.*;
 class Learner implements Comparable<Learner>, Runnable
 {
 	public static int NUM_WEIGHTS = 5;
-	public static double MIN_WEIGHT = -100;
-	public static double MAX_WEIGHT = 0;
-	public static double MAX_REWARD_WEIGHT = 1000;
-	public static int NUM_TETRIS = 1;
+	public static double MIN_WEIGHT = -5;
+	public static double MAX_WEIGHT = 5;
+	public static double MAX_REWARD_WEIGHT = 20;
+	public static int NUM_TETRIS = 10;
 	public double[] weights;
 	public int fitness = -1;
 	
@@ -42,9 +42,13 @@ class Learner implements Comparable<Learner>, Runnable
 		if (fitness < 0)
 		{
 			fitness = 0;
-			PlayerSkeleton ps = new PlayerSkeleton();
-			ps.setWeights(weights);
-			fitness += ps.run();
+			for (int i = 0; i < NUM_TETRIS; i++)
+			{
+				PlayerSkeleton ps = new PlayerSkeleton();
+				ps.setWeights(weights);
+				fitness += ps.run();
+			}
+			fitness = fitness/NUM_TETRIS;
 		}
 	}
 	

@@ -8,20 +8,19 @@ public class PlayerSkeleton {
 	public PlayerSkeleton()
 	{
 		//initialise default weights here
-		//weights = new double[22];
 		//weights 0 is total column height
 		//weights 1 is differences in adjacent column heights
-		//weight 2 is maximum column heights
+		//weight 2 is maximum column height
 		//weight 3 is number of holes
 		//weight 4 is reward for clearing.
 		//default initialisations
 		try
 		{
 			Scanner sc = new Scanner(new File("weights.txt"));
-			weights = new double[22];
+			weights = new double[5];
 			sc.nextInt();
 			sc.nextInt();
-			for (int i = 0; i < 22; i++)
+			for (int i = 0; i < 5; i++)
 				weights[i] = sc.nextDouble();
 		}
 		catch (FileNotFoundException fnfe)
