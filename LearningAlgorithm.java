@@ -8,8 +8,9 @@ public class LearningAlgorithm
 	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
 	public static final int NUM_RUNS = 100; //number of runs to learn each time this algo is run
 	public static final int TOURNAMENT_SIZE = 10; //size of tournament for tournament mating algorithm
-	public static double MUTATION_AMOUNT = 0.5; //fraction of original range to mutate by
+	public static double MUTATION_AMOUNT = 0.2; //fraction of original range to mutate by
 	public static int NUM_GEN = 50; //number of new pop introduced in each generation
+	public static double REPRODUCTION_RATE = 0.7;
 	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
 
@@ -65,13 +66,18 @@ public class LearningAlgorithm
 			Collections.sort(learners);
 			System.out.println(run + " " + learners.get(0).fitness);
 			Learner[] newGeneration = new Learner[NUM_GEN];
-			for (int k = 0; k < NUM_GEN; k++)
+			for (int k = 0; k < (int)(NUM_GEN * REPRODUCTION_RATE); k++)
 			{
 				newGeneration[k] = tournamentMating();
 			}
+
+			for (int k = (int)(NUM_GEN * REPRODUCTION_RATE); k < NUM_GEN; k++)
+			{
+				newGeneration[k] = new Learner();
+			}
 			//kill off last NUM_GEN of the old generation, replace with the new generation
 			int i = POP_SIZE-NUM_GEN;
-			for (int j = 0; j < newGeneration.length; j++) 
+			for (int j = 0; j < newGeneration.length; j++)
 			{
 				learners.set(i, newGeneration[j]);
 				i++;
@@ -166,11 +172,11 @@ public class LearningAlgorithm
 			if (mutationChance < MUTATION_RATE)
 			{
 				//randomly mutate the value by up to +/-25% of the initial range
-				weights[i] += Math.random()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)*MUTATION_AMOUNT - 0.5*MUTATION_AMOUNT*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT); 
+				weights[i] += Math.random()*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT)*MUTATION_AMOUNT - 0.5*MUTATION_AMOUNT*(Learner.MAX_WEIGHT - Learner.MIN_WEIGHT);
 			}
 		}
 	}
-	
+
 	public void saveToFile(int runs, ArrayList<Learner> learners) throws FileNotFoundException
 	{
 		PrintWriter out = new PrintWriter("weights.txt");
