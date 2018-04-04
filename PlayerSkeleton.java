@@ -79,7 +79,6 @@ public class PlayerSkeleton {
 		{
 			s.makeMove(this.pickMove(s, s.legalMoves()));
 		}
-		System.out.println(s.getRowsCleared());
 		return s.getRowsCleared();
 	}
 	
