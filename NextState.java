@@ -144,8 +144,8 @@ public class NextState {
 	public NextState() {
 	}
 	
-	//special constructor for existing grid and piece
-	public NextState(int[][] grid, int[] oldTop, int nPiece)
+	//special constructor for existing grid and piece and rows cleared.
+	public NextState(int[][] grid, int[] oldTop, int nPiece, int rCleared)
 	{
 		for (int r = 0; r < ROWS; r++)
 		{
@@ -157,11 +157,17 @@ public class NextState {
 		for (int c = 0; c < COLS; c++)
 			top[c] = oldTop[c];
 		nextPiece = nPiece;
+		cleared = rCleared;
 	}
 	
 	//gives legal moves for 
 	public int[][] legalMoves() {
 		return legalMoves[nextPiece];
+	}
+	
+	//gives legal moves for input piece
+	public int[][] legalMoves(int n) {
+		return legalMoves[n];
 	}
 	
 	//make a move based on the move index - its order in the legalMoves list

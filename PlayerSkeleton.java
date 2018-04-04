@@ -36,9 +36,14 @@ public class PlayerSkeleton {
 		double maxSoFar = Integer.MIN_VALUE;
 		for (int i = 0; i < legalMoves.length; i++)
 		{
-			NextState ns = new NextState(s.getField(), s.getTop(), s.getNextPiece());
+			NextState ns = new NextState(s.getField(), s.getTop(), s.getNextPiece(), 0);
 			ns.makeMove(i);
-			double currValue = getHeuristic(ns);
+			double currValue = 0;
+			for (int j = 0; j < State.N_PIECES; j++)
+			{
+				currValue += lookaheadMove(ns, j);
+			}
+			currValue/=State.N_PIECES;
 			if (currValue > maxSoFar)
 			{
 				maxSoFar = currValue;
@@ -48,6 +53,25 @@ public class PlayerSkeleton {
 		return bestMove;
 	}
 	
+	//This function takes in a NextState and a piece number.
+	//It finds the best move to make and returns the heuristic value of the resulting state.
+	public double lookaheadMove(NextState ns, int piece)
+	{
+		int[][] legalMoves = ns.legalMoves(piece);
+		double maxSoFar = Integer.MIN_VALUE;
+		for (int i = 0; i < legalMoves.length; i++)
+		{
+			NextState las = new NextState(ns.getField(), ns.getTop(), piece, ns.getRowsCleared());
+			las.makeMove(i);
+			double currValue = getHeuristic(las);
+			if (currValue > maxSoFar)
+			{
+				maxSoFar = currValue;
+			}
+		}
+		return maxSoFar;
+	}
+	
 	public int run()
 	{
 		State s = new State();
@@ -55,6 +79,7 @@ public class PlayerSkeleton {
 		{
 			s.makeMove(this.pickMove(s, s.legalMoves()));
 		}
+		System.out.println(s.getRowsCleared());
 		return s.getRowsCleared();
 	}
 	
