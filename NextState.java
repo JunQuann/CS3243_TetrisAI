@@ -288,6 +288,81 @@ public class NextState {
 		}
 		return holes;
 	}
+		//For each column, go to every row from bottom. Find the first hole and count number of blocks on this hole
+	public int getBlocksOnHoles(){
+	    int blocksOnHole = 0;
+	    int [] topOfEachColumn =  getTop();
+	    for(int col = 0; col < COLS; col++){
+	        boolean foundHole = false;
+	        for(int row = 0; row < topOfEachColumn[col]; row++){
+	           if(!foundHole && field[row][col] == 0){
+	               foundHole = true;
+               }
+               else if(foundHole && field[row][col] != 0){
+	               blocksOnHole++;
+               }
+            }
+        }
+	    return blocksOnHole;
+    }
+	
+    public int getRowTransition(){
+	    int transition = 0;
+        //to identify if first column for each row is empty
+        for(int row = 0; row < ROWS; row++){
+            boolean prevHole;
+            if(field[row][0] == 0){ //0 for first column
+                prevHole = true;
+            }
+            else{
+                prevHole = false;
+            }
+            for(int col = 1; col < COLS; col++){
+                if(field[row][col] == 0){ //If empty
+                    if(!prevHole){ //Current col is empty, so check if prev is hole or not, if not hole then transition++
+                    transition++;
+                    }
+                    prevHole = true;
+                }
+                else{ //If this is not a hole, i have to check if previous one is a hole or not
+                    if(prevHole){
+                        transition++;
+                    }
+                    prevHole = false;
+                }
+            }
+        }
+        return transition;
+    }
+    
+    public int getColTransition(){
+        int transition = 0;
+        //to identify if first column for each row is empty
+        for(int col = 0; col < COLS; col++){
+            boolean prevHole;
+            if(field[0][col] == 0){ //0 for first column
+                prevHole = true;
+            }
+            else{
+                prevHole = false;
+            }
+            for(int row = 1; row < ROWS; row++){ //CHANGE TO getTop(col)
+                if(field[row][col] == 0){ //If empty
+                    if(!prevHole){ //Current col is empty, so check if prev is hole or not, if not hole then transition++
+                        transition++;
+                    }
+                    prevHole = true;
+                }
+                else{ //If this is not a hole, i have to check if previous one is a hole or not
+                    if(prevHole){
+                        transition++;
+                    }
+                    prevHole = false;
+                }
+            }
+        }
+        return transition;
+    }
 }
 
 

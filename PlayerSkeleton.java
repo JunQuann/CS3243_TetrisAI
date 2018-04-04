@@ -17,10 +17,10 @@ public class PlayerSkeleton {
 		try
 		{
 			Scanner sc = new Scanner(new File("weights.txt"));
-			weights = new double[5];
+			weights = new double[8];
 			sc.nextInt();
 			sc.nextInt();
-			for (int i = 0; i < 5; i++)
+			for (int i = 0; i < 8; i++)
 				weights[i] = sc.nextDouble();
 		}
 		catch (FileNotFoundException fnfe)
@@ -102,8 +102,11 @@ public class PlayerSkeleton {
 		heuristic += weights[2] * ns.getMaxColumnHeight();
 		//get holes heuristic
 		heuristic += weights[3] * ns.getHoles();
+		heuristic += weights[4] * ns.getBlocksOnHoles();
+		heuristic += weights[5] * ns.getRowTransition();
+		heuristic += weights[6] * ns.getColTransition();
 		//get cleared rows heuristic
-		heuristic += weights[4] * ns.getRowsCleared();
+		heuristic += weights[7] * ns.getRowsCleared();
 		return heuristic;
 	}
 	
