@@ -6,12 +6,12 @@ public class LearningAlgorithm
 	public static final int POP_SIZE = 100;
 	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
 	public static final int NUM_RUNS = 200; //number of runs to learn each time this algo is run
-	public static final int TOURNAMENT_SIZE = 8; //size of tournament for tournament mating algorithm
+	public static int TOURNAMENT_SIZE = 8; //size of tournament for tournament mating algorithm
 	public static int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static double MUTATION_AMOUNT = 0.2; //fraction of original range to mutate by
-	public static int NUM_GEN = 70; //number of new pop introduced in each generation
+	public static int NUM_GEN = 50; //number of new pop introduced in each generation
 	public static double REPRODUCTION_RATE = 1.0;
-	public static final int THREAD_NUM = 20; //maximum number of concurrent threads to run.
+	public static int THREAD_NUM = 20; //maximum number of concurrent threads to run.
 	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
 
@@ -46,12 +46,20 @@ public class LearningAlgorithm
 		}
 		for (int run = 0; run < NUM_RUNS; run++)
 		{
-			if (run+totalRuns > 5)
+			if (run+totalRuns >= 3)
+			{
 				REPRODUCTION_RATE = 0.9;
-			if (run + totalRuns > 10)
+			}
+			if (run + totalRuns >= 6)
+			{
 				REPRODUCTION_RATE = 0.7;
-			if (run + totalRuns > 15)
+				NUM_GEN = 60;
+			}
+			if (run + totalRuns >= 8)
+			{
 				REPRODUCTION_RATE = 0.5;
+				NUM_GEN = 70;
+			}
 			multiThreadRun();
 			Collections.sort(learners);
 			System.out.println(run + " " + learners.get(0).fitness);
