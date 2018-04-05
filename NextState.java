@@ -294,17 +294,22 @@ public class NextState {
 		}
 		return holes;
 	}
-		//For each column, go to every row from bottom. Find the first hole and count number of blocks on this hole
+	
+	//For each column, go to every row from bottom. Find the first hole and count number of blocks on this hole
 	public int getBlocksOnHoles(){
 	    int blocksOnHole = 0;
-	    int [] topOfEachColumn =  getTop();
-	    for(int col = 0; col < COLS; col++){
+	    int [] topOfEachColumn = getTop();
+	    for(int col = 0; col < COLS; col++)
+		{
 	        boolean foundHole = false;
-	        for(int row = 0; row < topOfEachColumn[col]; row++){
-	           if(!foundHole && field[row][col] == 0){
+	        for(int row = 0; row <= topOfEachColumn[col]; row++)
+			{
+	           if(!foundHole && field[row][col] == 0)
+			   {
 	               foundHole = true;
                }
-               else if(foundHole && field[row][col] != 0){
+               else if(foundHole && field[row][col] != 0)
+			   {
 	               blocksOnHole++;
                }
             }
