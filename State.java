@@ -1,6 +1,5 @@
 import java.awt.Color;
-import java.util.*;
-import java.io.*;
+
 
 
 
@@ -9,7 +8,13 @@ public class State {
 	public static final int ROWS = 21;
 	public static final int N_PIECES = 7;
 
+	
+
 	public boolean lost = false;
+	
+	
+	
+
 	
 	public TLabel label;
 	
@@ -79,8 +84,6 @@ public class State {
 		{{2,2,1},{2,3}}
 	};
 	
-	public Scanner sc;
-	
 	//initialize legalMoves
 	{
 		//for each piece type
@@ -104,6 +107,7 @@ public class State {
 				}
 			}
 		}
+	
 	}
 	
 	
@@ -157,12 +161,16 @@ public class State {
 	//constructor
 	public State() {
 		nextPiece = randomPiece();
+
 	}
 	
 	//random integer, returns 0-6
 	private int randomPiece() {
 		return (int)(Math.random()*N_PIECES);
 	}
+	
+
+
 	
 	//gives legal moves for 
 	public int[][] legalMoves() {
@@ -307,5 +315,4 @@ public class State {
 	
 
 }
-
 

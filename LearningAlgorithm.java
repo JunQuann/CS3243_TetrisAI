@@ -189,12 +189,14 @@ public class LearningAlgorithm
 	public void multiThreadRun()
 	{
 		Thread[] threads = new Thread[THREAD_NUM];
-		for (int i = 0; i < POP_SIZE; i+= THREAD_NUM)
+		int i = 0;
+		while (i < POP_SIZE)
 		{
 			for (int j = 0; j < THREAD_NUM; j++)
 			{
 				threads[j] = new Thread(learners.get(i));
 				threads[j].start();
+				i++;
 			}
 			for (int j = 0; j < THREAD_NUM; j++)
 			{
