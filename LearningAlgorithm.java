@@ -5,13 +5,13 @@ public class LearningAlgorithm
 {
 	public static final int POP_SIZE = 100;
 	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
-	public static final int NUM_RUNS = 100; //number of runs to learn each time this algo is run
+	public static final int NUM_RUNS = 200; //number of runs to learn each time this algo is run
 	public static final int TOURNAMENT_SIZE = 8; //size of tournament for tournament mating algorithm
 	public static int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static double MUTATION_AMOUNT = 0.2; //fraction of original range to mutate by
-	public static int NUM_GEN = 50; //number of new pop introduced in each generation
+	public static int NUM_GEN = 70; //number of new pop introduced in each generation
 	public static double REPRODUCTION_RATE = 1.0;
-	public static final int THREAD_NUM = 10; //maximum number of concurrent threads to run.
+	public static final int THREAD_NUM = 20; //maximum number of concurrent threads to run.
 	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
 
@@ -46,15 +46,22 @@ public class LearningAlgorithm
 		}
 		for (int run = 0; run < NUM_RUNS; run++)
 		{
+			if (run+totalRuns > 5)
+				REPRODUCTION_RATE = 0.9;
+			if (run + totalRuns > 10)
+				REPRODUCTION_RATE = 0.7;
+			if (run + totalRuns > 15)
+				REPRODUCTION_RATE = 0.5;
 			multiThreadRun();
 			Collections.sort(learners);
 			System.out.println(run + " " + learners.get(0).fitness);
 			Learner[] newGeneration = new Learner[NUM_GEN];
+			//generate children through mating
 			for (int k = 0; k < (int)(NUM_GEN * REPRODUCTION_RATE); k++)
 			{
 				newGeneration[k] = tournamentMating();
 			}
-
+			//generate immigrants
 			for (int k = (int)(NUM_GEN * REPRODUCTION_RATE); k < NUM_GEN; k++)
 			{
 				newGeneration[k] = new Learner();
@@ -66,7 +73,7 @@ public class LearningAlgorithm
 				learners.set(i, newGeneration[j]);
 				i++;
 			}
-			//save data to file
+			//save data to file every 2 runs
 			if (run % 2 == 0)
 				saveToFile(run+totalRuns, learners);
 		}

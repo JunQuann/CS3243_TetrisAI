@@ -12,7 +12,10 @@ public class PlayerSkeleton {
 		//weights 1 is differences in adjacent column heights
 		//weight 2 is maximum column height
 		//weight 3 is number of holes
-		//weight 4 is reward for clearing.
+		//weight 4 is blocks on holes
+		//weight 5 is row transitions
+		//weight 6 is col transitions
+		//weight 7 is reward for clearing
 		//default initialisations
 		try
 		{
@@ -79,6 +82,7 @@ public class PlayerSkeleton {
 		{
 			s.makeMove(this.pickMove(s, s.legalMoves()));
 		}
+		System.out.println(s.getRowsCleared());
 		return s.getRowsCleared();
 	}
 	
@@ -123,7 +127,7 @@ public class PlayerSkeleton {
 			heuristic += weights[1] * ns.getColumnHeightDiff(i);
 		}
 		//get max col height heuristic
-		heuristic += weights[2] * ns.getMaxColumnHeight();
+		//heuristic += weights[2] * ns.getMaxColumnHeight();
 		//get holes heuristic
 		heuristic += weights[3] * ns.getHoles();
 		heuristic += weights[4] * ns.getBlocksOnHoles();
