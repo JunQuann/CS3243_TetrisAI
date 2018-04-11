@@ -276,19 +276,12 @@ public class NextState {
 		int holes = 0;
 		for (int col = 0; col < COLS; col++)
 		{
-			//check col for holes
-			boolean foundBlock = false;
-			for (int row = ROWS-1; row>=0; row--)
+			//start from top of each column and look downwards
+			for (int row = top[col]-1; row>=0; row--)
 			{
-				if (foundBlock == false)
+				if (field[rol][col] == 0)
 				{
-					if (field[row][col] > 0)
-						foundBlock = true;
-				}
-				else
-				{
-					if (field[row][col] == 0)
-						holes++;
+					holes++;
 				}
 			}
 		}

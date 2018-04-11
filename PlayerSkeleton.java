@@ -115,7 +115,7 @@ public class PlayerSkeleton {
 		double heuristic = 0;
 		//if is lost, then return minimum possible value
 		if (ns.hasLost())
-			return Double.MIN_VALUE;
+			return Integer.MIN_VALUE;
 		//get col height heuristic
 		for (int i = 0; i < 10; i++)
 		{

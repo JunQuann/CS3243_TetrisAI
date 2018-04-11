@@ -61,6 +61,7 @@ public class LearningAlgorithm
 				NUM_GEN = 70;
 			}
 			multiThreadRun();
+			//singleThreadRun();
 			Collections.sort(learners);
 			System.out.println(run + " " + learners.get(0).fitness);
 			Learner[] newGeneration = new Learner[NUM_GEN];
