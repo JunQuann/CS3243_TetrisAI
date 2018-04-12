@@ -2,11 +2,11 @@ import java.util.*;
 
 class Learner implements Comparable<Learner>, Runnable
 {
-	public static int NUM_WEIGHTS = 5;
-	public static double MIN_WEIGHT = -5;
-	public static double MAX_WEIGHT = 5;
+	public static int NUM_WEIGHTS = 8;
+	public static double MIN_WEIGHT = -8;
+	public static double MAX_WEIGHT = 2;
 	public static double MAX_REWARD_WEIGHT = 20;
-	public static int NUM_TETRIS = 10;
+	public static int NUM_TETRIS = 1;
 	public double[] weights;
 	public int fitness = -1;
 	

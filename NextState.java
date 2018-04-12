@@ -144,8 +144,8 @@ public class NextState {
 	public NextState() {
 	}
 	
-	//special constructor for existing grid and piece
-	public NextState(int[][] grid, int[] oldTop, int nPiece)
+	//special constructor for existing grid and piece and rows cleared.
+	public NextState(int[][] grid, int[] oldTop, int nPiece, int rCleared)
 	{
 		for (int r = 0; r < ROWS; r++)
 		{
@@ -157,11 +157,17 @@ public class NextState {
 		for (int c = 0; c < COLS; c++)
 			top[c] = oldTop[c];
 		nextPiece = nPiece;
+		cleared = rCleared;
 	}
 	
 	//gives legal moves for 
 	public int[][] legalMoves() {
 		return legalMoves[nextPiece];
+	}
+	
+	//gives legal moves for input piece
+	public int[][] legalMoves(int n) {
+		return legalMoves[n];
 	}
 	
 	//make a move based on the move index - its order in the legalMoves list
@@ -270,24 +276,112 @@ public class NextState {
 		int holes = 0;
 		for (int col = 0; col < COLS; col++)
 		{
-			//check col for holes
-			boolean foundBlock = false;
-			for (int row = ROWS-1; row>=0; row--)
+			//start from top of each column and look downwards
+			for (int row = top[col]-1; row>=0; row--)
 			{
-				if (foundBlock == false)
+				if (field[rol][col] == 0)
 				{
-					if (field[row][col] > 0)
-						foundBlock = true;
-				}
-				else
-				{
-					if (field[row][col] == 0)
-						holes++;
+					holes++;
 				}
 			}
 		}
 		return holes;
 	}
+	
+	//For each column, go to every row from bottom. Find the first hole and count number of blocks on this hole
+	public int getBlocksOnHoles(){
+	    int blocksOnHole = 0;
+	    int [] topOfEachColumn = getTop();
+	    for(int col = 0; col < COLS; col++)
+		{
+	        boolean foundHole = false;
+	        for(int row = 0; row <= topOfEachColumn[col]; row++)
+			{
+	           if(!foundHole && field[row][col] == 0)
+			   {
+	               foundHole = true;
+               }
+               else if(foundHole && field[row][col] != 0)
+			   {
+	               blocksOnHole++;
+               }
+            }
+        }
+	    return blocksOnHole;
+    }
+	
+    public int getRowTransition(){
+	    int transition = 0;
+        //to identify if first column for each row is empty
+        for(int row = 0; row < ROWS; row++)
+		{
+            boolean prevHole;
+            if(field[row][0] == 0)
+			{ //0 for first column
+                prevHole = true;
+            }
+            else
+			{
+                prevHole = false;
+            }
+            for(int col = 1; col < COLS; col++)
+			{
+                if(field[row][col] == 0)
+				{ //If empty
+                    if(!prevHole){ //Current col is empty, so check if prev is hole or not, if not hole then transition++
+						transition++;
+                    }
+                    prevHole = true;
+                }
+                else
+				{ //If this is not a hole, i have to check if previous one is a hole or not
+                    if(prevHole)
+					{
+                        transition++;
+                    }
+                    prevHole = false;
+                }
+            }
+        }
+        return transition;
+    }
+    
+    public int getColTransition(){
+        int transition = 0;
+        //to identify if first column for each row is empty
+        for(int col = 0; col < COLS; col++)
+		{
+            boolean prevHole;
+            if(field[0][col] == 0)
+			{ //0 for first column
+                prevHole = true;
+            }
+            else
+			{
+                prevHole = false;
+            }
+            for(int row = 1; row < ROWS; row++)
+			{ //CHANGE TO getTop(col)
+                if(field[row][col] == 0)
+				{ //If empty
+                    if(!prevHole)
+					{ //Current col is empty, so check if prev is hole or not, if not hole then transition++
+                        transition++;
+                    }
+                    prevHole = true;
+                }
+                else
+				{ //If this is not a hole, i have to check if previous one is a hole or not
+                    if(prevHole)
+					{
+                        transition++;
+                    }
+                    prevHole = false;
+                }
+            }
+        }
+        return transition;
+    }
 }
 
 
