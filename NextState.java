@@ -143,8 +143,28 @@ public class NextState {
 	//constructor
 	public NextState() {
 	}
+<<<<<<< HEAD
 
 	//special constructor for existing grid and piece and rows cleared.
+=======
+	
+	//Populating the nextState field
+	public NextState(int[][] grid, int[] oldTop, int nPiece)
+	{
+		for (int r = 0; r < ROWS; r++)
+		{
+			for (int c = 0; c < COLS; c++)
+			{
+				field[r][c] = grid[r][c];
+			}
+		}
+		for (int c = 0; c < COLS; c++)
+			top[c] = oldTop[c];
+		nextPiece = nPiece;
+	}
+	
+	//Constructor overload for lookahead
+>>>>>>> 0832f4992717c21beeda7fd6a8cf016f751c0f8d
 	public NextState(int[][] grid, int[] oldTop, int nPiece, int rCleared)
 	{
 		for (int r = 0; r < ROWS; r++)
@@ -270,6 +290,7 @@ public class NextState {
 			maxH = Math.max(maxH, top[i]);
 		return maxH;
 	}
+<<<<<<< HEAD
 
 	public int getHoles()
 	{
@@ -282,10 +303,25 @@ public class NextState {
 				if (field[row][col] == 0)
 				{
 					holes++;
+=======
+	
+	public double getHoles()
+	{
+		
+		int[] top = getTop();
+		
+		int numHoles = 0;
+		for (int j = 0;  j < COLS;  j++) {
+			if (top[j] != 0) {
+				for (int i = top[j] - 1;  i >= 0;  i--) {
+					if (field[i][j] == 0) {
+						numHoles++;
+					}
+>>>>>>> 0832f4992717c21beeda7fd6a8cf016f751c0f8d
 				}
 			}
 		}
-		return holes;
+		return (double) numHoles * 10;
 	}
 
 	//For each column, go to every row from bottom. Find the first hole and count number of blocks on this hole
@@ -309,6 +345,7 @@ public class NextState {
         }
 	    return blocksOnHole;
     }
+<<<<<<< HEAD
 
     public int getRowTransition(){
 	    int transition = 0;
@@ -382,4 +419,56 @@ public class NextState {
         }
         return transition;
     }
+=======
+	
+	public double getRowTransition(){
+		int rowTransitions = 0;
+		int lastCell = 1;
+		for (int i = 0;  i < ROWS;  i++) {
+			for (int j = 0;  j < COLS;  j++) {
+				if ((field[i][j] == 0) != (lastCell == 0)) {
+					rowTransitions++;
+				}
+				lastCell = field[i][j];
+			}
+			if (lastCell == 0) rowTransitions++;
+		}
+		return (double) rowTransitions;
+	}
+	
+	public double getColTransition(){
+		int[] top = getTop();
+		int colTransitions = 0;
+		for (int j = 0;  j < State.COLS;  j++) {
+			for (int i = top[j] - 2;  i >= 0;  i--) {
+				if ((field[i][j] == 0) != (field[i + 1][j] == 0)) {
+					colTransitions++;
+				}
+			}
+			if (field[0][j] == 0 && top[j] > 0) colTransitions++;
+		}
+		return (double) colTransitions;
+	}
+	
+		public int wellFeature(){
+		int wellSum = 0;
+		int [] topOfEachColumn = getTop();
+		for (int j = 0;  j < COLS;  j++) {
+			for (int i = ROWS -1;  i >= 0;  i--) {
+				if (field[i][j] == 0) {
+					if (j == 0 || field[i][j - 1] != 0) {
+						if (j == State.COLS - 1 || field[i][j + 1] != 0) {
+							int wellHeight = i - topOfEachColumn[j] + 1;
+							wellSum += wellHeight * (wellHeight + 1) / 2;
+						}
+					}
+				} else {
+					break;
+				}
+			}
+		}
+		return wellSum;
+	}
+	
+>>>>>>> 0832f4992717c21beeda7fd6a8cf016f751c0f8d
 }
