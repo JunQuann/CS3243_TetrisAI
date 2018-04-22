@@ -6,15 +6,15 @@ import java.util.concurrent.Future;
 
 public class LearningAlgorithm
 {
-	public static final int POP_SIZE = 100;
+	public static final int POP_SIZE = 150;
 	public static final int MAX_MUTATION_RATE = 100; //value for 100% chance of mutation occuring
-	public static final int NUM_RUNS = 200; //number of runs to learn each time this algo is run
+	public static final int NUM_RUNS = 100; //number of runs to learn each time this algo is run
 	public static int TOURNAMENT_SIZE = 8; //size of tournament for tournament mating algorithm
 	public static int MUTATION_RATE = 10; //mutation rate out of MAX_MUTATION_RATE
 	public static double MUTATION_AMOUNT = 0.1; //fraction of original range to mutate by
-	public static int NUM_GEN = 80; //number of new pop introduced in each generation
-	public static double REPRODUCTION_RATE = 1.0;
-	public static int THREAD_NUM = 100; //maximum number of concurrent threads to run.
+	public static int NUM_GEN = 120; //number of new pop introduced in each generation
+	public static double REPRODUCTION_RATE = 0.5;
+	public static int THREAD_NUM = 150; //maximum number of concurrent threads to run.
 	public static final boolean newFile = true;
 	public ArrayList<Learner> learners;
 
@@ -64,14 +64,16 @@ public class LearningAlgorithm
 				NUM_GEN = 70;
 			}
 			executorRun();
-			//multiThreadRun();
-			//singleThreadRun();
+			// multiThreadRun();
+			// singleThreadRun();
 			Collections.sort(learners);
-			System.out.println(run + " " + learners.get(0).fitness);
+			System.out.println("Run Number: " + (run + totalRuns) + ", Highest Fitness in run: " + learners.get(0).fitness);
+			saveToFile(run+totalRuns, learners);
 			Learner[] newGeneration = new Learner[NUM_GEN];
 			//generate children through mating
 			for (int k = 0; k < (int)(NUM_GEN * REPRODUCTION_RATE); k++)
 			{
+				System.out.print("Mating number: " + k + ", ");
 				newGeneration[k] = tournamentMating();
 			}
 			//generate immigrants
@@ -87,58 +89,87 @@ public class LearningAlgorithm
 				i++;
 			}
 			//save data to file every 2 runs
-			if (run % 2 == 0)
-				saveToFile(run+totalRuns, learners);
+			// if (run % 2 == 0)
 		}
 	}
 
-	public Learner tournamentMating()
-	{
-		ArrayList<Integer> fittestTwo = tournament();
-		return reproduce(learners.get(fittestTwo.get(0)), learners.get(fittestTwo.get(1)));
-	}
+	// public Learner tournamentMating()
+	// {
+	// 	ArrayList<Integer> fittestTwo = tournament();
+	// 	return reproduce(learners.get(fittestTwo.get(0)), learners.get(fittestTwo.get(1)));
+	// }
+    //
+	// //returns 2 integers - the position of the 2 winners of the tournament
+	// public ArrayList<Integer> tournament()
+	// {
+	// 	ArrayList<Integer> tList = new ArrayList<Integer>();
+	// 	//randomly select TOURNAMENT_SIZE people
+	// 	for (int i = 0; i < TOURNAMENT_SIZE; i++)
+	// 	{
+	// 		tList.add((int)(Math.random()*POP_SIZE));
+	// 	}
+	// 	Collections.sort(tList);
+	// 	//since Learners is sorted by fittest, the 2 smallest integers picked are the 2 fittest
+	// 	ArrayList<Integer> result = new ArrayList<Integer>();
+	// 	result.add(tList.get(0));
+	// 	result.add(tList.get(1));
+	// 	return result;
+	// }
 
-	//returns 2 integers - the position of the 2 winners of the tournament
-	public ArrayList<Integer> tournament()
-	{
-		ArrayList<Integer> tList = new ArrayList<Integer>();
-		//randomly select TOURNAMENT_SIZE people
-		for (int i = 0; i < TOURNAMENT_SIZE; i++)
-		{
-			tList.add((int)(Math.random()*POP_SIZE));
+	public Learner tournamentMating() {
+		//Initialising probability
+		int totalFitness = 0;
+		Learner[] chosenLearner = new Learner[2];
+		for (Learner learner : learners) {
+			totalFitness += learner.fitness;
 		}
-		Collections.sort(tList);
-		//since Learners is sorted by fittest, the 2 smallest integers picked are the 2 fittest
-		ArrayList<Integer> result = new ArrayList<Integer>();
-		result.add(tList.get(0));
-		result.add(tList.get(1));
-		return result;
-	}
 
-	public Learner consecutiveMating(int k)
-	{
-		Learner firstParent = learners.get(k*2);
-		Learner secondParent = learners.get(k*2+1);
-		return weightedReproduce(firstParent, secondParent);
-	}
-
-	/*
-	Takes in 2 Learners.
-	Returns a new Learner with weights equal to the average of each weight of the parent
-	*/
-	public Learner weightedReproduce(Learner first, Learner second)
-	{
-		double[] newW = new double[Learner.NUM_WEIGHTS];
-		//child takes half from first parent, half from second
-		for (int i = 0; i < Learner.NUM_WEIGHTS; i++)
-		{
-			double currW = first.weights[i] + second.weights[i];
-			currW = currW/2.0;
-			newW[i] = currW;
+		//need to pick 2 elements
+		for (int k = 0; k < 2; k++) {
+			chosenLearner[k] = randomSelector(totalFitness);
 		}
-		mutate(newW);
-		return new Learner(newW);
+		System.out.println("Fitness selected = " + chosenLearner[0].fitness + ", " + chosenLearner[1].fitness);
+		return reproduce(chosenLearner[0], chosenLearner[1]);
 	}
+
+	//select the weights randomly, in accordance to the probability based on the fitness function
+	public Learner randomSelector(int totalFitness) {
+		Random rand = new Random();
+		int probability = rand.nextInt(totalFitness);
+		//Since the arraylist is in descending order, we want to count backwards
+		int inversedProbability = totalFitness - probability;
+		int index = 0;
+		// System.out.println("probability = " + probability + ", inversedProbability");
+		while (index < learners.size() && totalFitness > inversedProbability) {
+			totalFitness -= learners.get(index++).fitness;
+		}
+		return learners.get(Math.max(0, index - 1));
+	}
+
+	// public Learner consecutiveMating(int k)
+	// {
+	// 	Learner firstParent = learners.get(k*2);
+	// 	Learner secondParent = learners.get(k*2+1);
+	// 	return weightedReproduce(firstParent, secondParent);
+	// }
+    //
+	// /*
+	// Takes in 2 Learners.
+	// Returns a new Learner with weights equal to the average of each weight of the parent
+	// */
+	// public Learner weightedReproduce(Learner first, Learner second)
+	// {
+	// 	double[] newW = new double[Learner.NUM_WEIGHTS];
+	// 	//child takes half from first parent, half from second
+	// 	for (int i = 0; i < Learner.NUM_WEIGHTS; i++)
+	// 	{
+	// 		double currW = first.weights[i] + second.weights[i];
+	// 		currW = currW/2.0;
+	// 		newW[i] = currW;
+	// 	}
+	// 	mutate(newW);
+	// 	return new Learner(newW);
+	// }
 
 	/*
 	Takes in 2 learners.
@@ -149,14 +180,15 @@ public class LearningAlgorithm
 	{
 		int crossoverPoint = (int)(Math.random()*Learner.NUM_WEIGHTS);
 		double[] newW = new double[Learner.NUM_WEIGHTS];
-		/*for (int i = 0; i < crossoverPoint; i++)
+		for (int i = 0; i < crossoverPoint; i++)
 		{
 			newW[i] = first.weights[i];
 		}
 		for (int i = crossoverPoint; i < Learner.NUM_WEIGHTS; i++)
 		{
 			newW[i] = second.weights[i];
-		}*/
+		}
+		/*
 		for (int i = 0; i < Learner.NUM_WEIGHTS; i++)
 		{
 			int selection = (int)Math.random()*2;
@@ -165,6 +197,7 @@ public class LearningAlgorithm
 			else
 				newW[i] = second.weights[i];
 		}
+		*/
 		//perform mutation here
 		mutate(newW);
 		return new Learner(newW);
@@ -198,14 +231,14 @@ public class LearningAlgorithm
 		out.close();
 	}
 	/*
-	public void singleThreadRun() 
+	public void singleThreadRun()
 	{
 		for (int i = 0; i < POP_SIZE; i++)
 		{
 			learners.get(i).run();
 		}
 	}
-	
+
 	public void multiThreadRun()
 	{
 		Thread[] threads = new Thread[THREAD_NUM];
@@ -233,16 +266,16 @@ public class LearningAlgorithm
 	}
 	*/
 	    public void executorRun() {
-        
+
         List<Future<Integer>> fitnessLevels = new ArrayList<>();
-        
+
         ExecutorService exec = Executors.newFixedThreadPool(THREAD_NUM);
-        
+
         for (int i = 0; i < learners.size(); i++) {
             Future<Integer> f = exec.submit(learners.get(i));
             fitnessLevels.add(f);
         }
-        
+
         for (int i = 0; i < fitnessLevels.size(); i++) {
             try {
                 Integer f = fitnessLevels.get(i).get();
@@ -252,11 +285,14 @@ public class LearningAlgorithm
             }
         }
     }
+
 	public static void main(String[] args)
 	{
 		LearningAlgorithm la = new LearningAlgorithm();
 		try
 		{
+			Timer timer = new Timer();
+			timer.schedule(new TimeCheck(), 0, 60000);
 			la.run();
 		}
 		catch (IOException ioe)
@@ -264,4 +300,10 @@ public class LearningAlgorithm
 			System.out.println(ioe.getMessage());
 		}
 	}
+}
+
+class TimeCheck extends TimerTask {
+    public void run() {
+       System.out.println("Still Working");
+    }
 }

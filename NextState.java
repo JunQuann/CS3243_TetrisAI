@@ -143,11 +143,7 @@ public class NextState {
 	//constructor
 	public NextState() {
 	}
-<<<<<<< HEAD
 
-	//special constructor for existing grid and piece and rows cleared.
-=======
-	
 	//Populating the nextState field
 	public NextState(int[][] grid, int[] oldTop, int nPiece)
 	{
@@ -162,9 +158,8 @@ public class NextState {
 			top[c] = oldTop[c];
 		nextPiece = nPiece;
 	}
-	
+
 	//Constructor overload for lookahead
->>>>>>> 0832f4992717c21beeda7fd6a8cf016f751c0f8d
 	public NextState(int[][] grid, int[] oldTop, int nPiece, int rCleared)
 	{
 		for (int r = 0; r < ROWS; r++)
@@ -290,26 +285,12 @@ public class NextState {
 			maxH = Math.max(maxH, top[i]);
 		return maxH;
 	}
-<<<<<<< HEAD
 
-	public int getHoles()
-	{
-		int holes = 0;
-		for (int col = 0; col < COLS; col++)
-		{
-			//start from top of each column and look downwards
-			for (int row = top[col]-1; row>=0; row--)
-			{
-				if (field[row][col] == 0)
-				{
-					holes++;
-=======
-	
 	public double getHoles()
 	{
-		
+
 		int[] top = getTop();
-		
+
 		int numHoles = 0;
 		for (int j = 0;  j < COLS;  j++) {
 			if (top[j] != 0) {
@@ -317,7 +298,6 @@ public class NextState {
 					if (field[i][j] == 0) {
 						numHoles++;
 					}
->>>>>>> 0832f4992717c21beeda7fd6a8cf016f751c0f8d
 				}
 			}
 		}
@@ -345,82 +325,16 @@ public class NextState {
         }
 	    return blocksOnHole;
     }
-<<<<<<< HEAD
 
-    public int getRowTransition(){
-	    int transition = 0;
-        //to identify if first column for each row is empty
-        for(int row = 0; row < ROWS; row++)
-		{
-            boolean prevHole;
-            if(field[row][0] == 0)
-			{ //0 for first column
-                prevHole = true;
-            }
-            else
-			{
-                prevHole = false;
-            }
-            for(int col = 1; col < COLS; col++)
-			{
-                if(field[row][col] == 0)
-				{ //If empty
-                    if(!prevHole){ //Current col is empty, so check if prev is hole or not, if not hole then transition++
-						transition++;
-                    }
-                    prevHole = true;
-                }
-                else
-				{ //If this is not a hole, i have to check if previous one is a hole or not
-                    if(prevHole)
-					{
-                        transition++;
-                    }
-                    prevHole = false;
-                }
-            }
-        }
-        return transition;
-    }
+	public double getAggregateHeight() {
+		int aggregrateHeight = 0;
+		int[] top = getTop();
+		for (int i = 0; i < COLS; i ++) {
+			aggregrateHeight += top[i];
+		}
+		return (double) aggregrateHeight;
+	}
 
-    public int getColTransition(){
-        int transition = 0;
-        //to identify if first column for each row is empty
-        for(int col = 0; col < COLS; col++)
-		{
-            boolean prevHole;
-            if(field[0][col] == 0)
-			{ //0 for first column
-                prevHole = true;
-            }
-            else
-			{
-                prevHole = false;
-            }
-            for(int row = 1; row < ROWS; row++)
-			{ //CHANGE TO getTop(col)
-                if(field[row][col] == 0)
-				{ //If empty
-                    if(!prevHole)
-					{ //Current col is empty, so check if prev is hole or not, if not hole then transition++
-                        transition++;
-                    }
-                    prevHole = true;
-                }
-                else
-				{ //If this is not a hole, i have to check if previous one is a hole or not
-                    if(prevHole)
-					{
-                        transition++;
-                    }
-                    prevHole = false;
-                }
-            }
-        }
-        return transition;
-    }
-=======
-	
 	public double getRowTransition(){
 		int rowTransitions = 0;
 		int lastCell = 1;
@@ -435,30 +349,47 @@ public class NextState {
 		}
 		return (double) rowTransitions;
 	}
-	
-	public double getColTransition(){
-		int[] top = getTop();
+
+	// public double getColTransition(){
+	// 	int[] top = getTop();
+	// 	int colTransitions = 0;
+	// 	for (int j = 0;  j < State.COLS;  j++) {
+	// 		for (int i = top[j] - 2;  i >= 0;  i--) {
+	// 			if ((field[i][j] == 0) != (field[i + 1][j] == 0)) {
+	// 				colTransitions++;
+	// 			}
+	// 		}
+	// 		if (field[0][j] == 0 && top[j] > 0) colTransitions++;
+	// 	}
+	// 	return (double) colTransitions;
+	// }
+
+	//Check for empty cells in the column which are adjacent to filled cells
+	public double getColTransition() {
 		int colTransitions = 0;
-		for (int j = 0;  j < State.COLS;  j++) {
-			for (int i = top[j] - 2;  i >= 0;  i--) {
-				if ((field[i][j] == 0) != (field[i + 1][j] == 0)) {
+		int[] top = getTop();
+		for (int i = 0; i < COLS; i++) {
+			for(int j = 0; j < top[i]; j++) {
+				if (field[j][i] == 0 && field[j + 1][i] != 0) {
+					colTransitions++;
+				}
+				if (field[j][i] != 0 && field[j + 1][i] == 0) {
 					colTransitions++;
 				}
 			}
-			if (field[0][j] == 0 && top[j] > 0) colTransitions++;
 		}
 		return (double) colTransitions;
 	}
-	
+
 		public int wellFeature(){
 		int wellSum = 0;
-		int [] topOfEachColumn = getTop();
+		int [] top = getTop();
 		for (int j = 0;  j < COLS;  j++) {
 			for (int i = ROWS -1;  i >= 0;  i--) {
 				if (field[i][j] == 0) {
 					if (j == 0 || field[i][j - 1] != 0) {
-						if (j == State.COLS - 1 || field[i][j + 1] != 0) {
-							int wellHeight = i - topOfEachColumn[j] + 1;
+						if (j == COLS - 1 || field[i][j + 1] != 0) {
+							int wellHeight = i - top[j] + 1;
 							wellSum += wellHeight * (wellHeight + 1) / 2;
 						}
 					}
@@ -469,6 +400,5 @@ public class NextState {
 		}
 		return wellSum;
 	}
-	
->>>>>>> 0832f4992717c21beeda7fd6a8cf016f751c0f8d
+
 }
